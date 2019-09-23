@@ -1,0 +1,126 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.2.RELEASE")
+        classpath("io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE")
+        classpath("org.hibernate.build.gradle:gradle-maven-publish-auth:2.0.1")
+        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:2.0.2.RELEASE"
+        classpath "io.rest-assured:rest-assured:3.0.2"
+        classpath "io.rest-assured:spring-mock-mvc:3.0.2"
+    }
+}
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: "io.spring.dependency-management"
+apply plugin: 'org.springframework.boot'
+apply plugin: 'maven-publish'
+apply plugin: 'maven-publish-auth'
+apply plugin: 'jacoco'
+apply plugin: 'project-report'
+apply plugin: 'spring-cloud-contract'
+
+group = 'com.azimo.quokka'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Greenwich.RELEASE'
+        mavenBom 'org.springframework.cloud:spring-cloud-vault-dependencies:2.1.1.RELEASE'
+    }
+}
+
+ext {
+    logstashVersion = '4.11'
+    swaggerVersion = '2.6.1'
+    springUtils = '0.1.20'
+    jolokiaVersion = '1.3.7'
+
+    commonsLangVersion = '3.9'
+    dynamoDbAwsSdkVersion = '2.3.2'
+
+    dynamoDbLocalVersion = '1.11.119'
+    awsSdkVersion = '1.11.490'
+    springDataReleaseTrainVersion = 'Lovelace-RELEASE'
+
+    springCloudContractVersion = '2.0.2.RELEASE'
+    jacksonDataTypeVersion = '2.9.8'
+    restAssuredVersion = '3.0.2'
+    guavaVersion = '28.1-jre'
+
+    contractsDir = file("contracts")
+    stubsOutputDirRoot = file("${project.buildDir}/production/${project.name}-stubs/")
+    assertJVersion = '3.11.1'
+}
+
+jar {
+    manifest { attributes("Implementation-Version": version) }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven { url "http://packages.confluent.io/maven/" }
+    maven { url 'https://repo.spring.io/libs-milestone' }
+    maven { url 'http://dynamodb-local.s3-website-us-west-2.amazonaws.com/release'}
+}
+
+configurations {
+    compile.exclude module: "spring-boot-starter-tomcat"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:${springCloudContractVersion}"
+    }
+}
+
+dependencies {
+    /** Spring **/
+    compile("org.springframework.boot:spring-boot-starter")
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-jetty")
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+    compile("org.springframework.cloud:spring-cloud-starter-consul-discovery")
+    compile("org.springframework.cloud:spring-cloud-starter-consul-config")
+    compile "org.springframework.cloud:spring-cloud-starter-vault-config"
+    compile "org.springframework.data:spring-data-releasetrain:${springDataReleaseTrainVersion}"
+    runtime("org.springframework.boot:spring-boot-properties-migrator")
+
+    /** aws **/
+    compile group: 'software.amazon.awssdk', name: 'dynamodb', version: "${dynamoDbAwsSdkVersion}"
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: "${awsSdkVersion}"
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-core', version: "${awsSdkVersion}"
+
+
+    /** Data Source **/
+    compile("net.logstash.logback:logstash-logback-encoder:${logstashVersion}")
+    compile("io.springfox:springfox-swagger2:${swaggerVersion}")
+
+    /** Spring boot admin **/
+    compile "org.jolokia:jolokia-core:${jolokiaVersion}"
+
+    /** Others */
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: "${commonsLangVersion}"
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: "${jacksonDataTypeVersion}"
+    compile group: 'com.google.guava', name: 'guava', version: "${guavaVersion}"
+
+    /** Tests **/
+    testCompile "junit:junit"
+    testCompile group: 'com.amazonaws', name: 'DynamoDBLocal', version: "${dynamoDbLocalVersion}"
+    testCompile group: 'org.assertj', name: 'assertj-core', version: "${assertJVersion}"
+    testCompile "org.springframework.boot:spring-boot-starter-test"
+    testCompile "org.springframework.cloud:spring-cloud-starter-contract-verifier"
+    testCompile "io.rest-assured:rest-assured:${restAssuredVersion}"
+    testCompile "io.rest-assured:spring-mock-mvc:${restAssuredVersion}"
+}
+
+task wrapper(type: Wrapper) { gradleVersion = '3.1' }
+
+contracts {
+    baseClassForTests = 'com.azimo.quokka.aggregator.controller.HomescreenControllerBaseTest'
+}

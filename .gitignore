@@ -1,0 +1,13 @@
+/bin/
+/.gradle/
+/build/
+/.settings/
+/.classpath
+/.project
+/logs/
+/target/
+/.idea/
+/ansible/
+.DS_Store
+out/
+service-homescreen-aggregator.iml
