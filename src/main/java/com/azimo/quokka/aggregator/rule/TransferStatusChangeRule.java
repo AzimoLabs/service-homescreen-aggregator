@@ -2,7 +2,6 @@ package com.azimo.quokka.aggregator.rule;
 
 import com.azimo.quokka.aggregator.dynamodb.UserStateRepository;
 import com.azimo.quokka.aggregator.model.component.ComponentAction;
-import com.azimo.quokka.aggregator.model.component.banner.WelcomeBannerComponent;
 import com.azimo.quokka.aggregator.model.component.command.DeleteCommand;
 import com.azimo.quokka.aggregator.model.component.command.UpdateCommand;
 import com.azimo.quokka.aggregator.model.component.transfer.ActiveTransferComponent;
@@ -44,8 +43,6 @@ public class TransferStatusChangeRule implements Rule {
         List<ComponentAction> componentActions = Lists.newArrayList();
         if (isActive(status)) {
             updateActiveTransfers(transfer, componentActions);
-            Optional<WelcomeBannerComponent> welcomeBanner = repo.findComponent(transfer.getUserId(), WelcomeBannerComponent.class);
-            welcomeBanner.ifPresent(c -> componentActions.add(ComponentAction.of(c, new DeleteCommand())));
         } else if (isClosed(status)) {
             updateRecentTransferComponent(transfer, componentActions);
 
@@ -81,8 +78,6 @@ public class TransferStatusChangeRule implements Rule {
         } else {
             Map<String, Transfer> transfers = Maps.newHashMap();
             transfers.put(transfer.getMtn(), transfer);
-            //If recent transfer component was not created yet at that point it means we didn't find registered event,
-            //this means there are recent transfers of that user that we don't have -> hasMore has to be set to true
             component = new RecentTransferComponent(transfer.getUserId(), transfers, true);
         }
         componentActions.add(ComponentAction.of(component, new UpdateCommand()));

@@ -5,7 +5,6 @@ import com.azimo.quokka.aggregator.generator.ComponentGenerator;
 import com.azimo.quokka.aggregator.generator.EventGenerator;
 import com.azimo.quokka.aggregator.model.component.Component;
 import com.azimo.quokka.aggregator.model.component.ComponentAction;
-import com.azimo.quokka.aggregator.model.component.banner.WelcomeBannerComponent;
 import com.azimo.quokka.aggregator.model.component.command.DeleteCommand;
 import com.azimo.quokka.aggregator.model.component.command.UpdateCommand;
 import com.azimo.quokka.aggregator.model.component.transfer.ActiveTransferComponent;
@@ -67,41 +66,6 @@ public class TransferStatusChangeRuleTest {
         assertThat(transfers.size()).isEqualTo(1);
         Transfer transfer = transfers.get(MTN_EVENT_ACTIVE_TRANSFER);
         assertTransfer(transfer, MTN_EVENT_ACTIVE_TRANSFER, 1548425797819l, "100.21", TransferStatus.IN_PROGRESS);
-    }
-
-    @Test
-    public void activeEventWithWelcomeBannerAndExistingActiveTransfer() {
-        //given
-        Event event = eventGenerator.transferStatusActiveChangeEvent();
-        ActiveTransferComponent expectedActiveTransferComponent = componentGenerator.createActiveTransferComponent(ComponentGenerator.MTN_ACTIVE_TRANSFER);
-        when(repo.findComponent(USER_ID, ActiveTransferComponent.class)).thenReturn(Optional.of(expectedActiveTransferComponent));
-        int numberOfFeeFreeTransfers = 2;
-        WelcomeBannerComponent expectedWelcomeBanner = componentGenerator.welcomeBanner(numberOfFeeFreeTransfers);
-        when(repo.findComponent(USER_ID, WelcomeBannerComponent.class)).thenReturn(Optional.of(expectedWelcomeBanner));
-
-        //when
-        List<ComponentAction> componentActions = rule.execute(event);
-
-        //then
-        assertThat(componentActions.size()).isEqualTo(2);
-        ComponentAction componentAction = componentActions.get(0);
-        assertThat(componentAction.command).isInstanceOf(UpdateCommand.class);
-        Component component = componentAction.component;
-        assertThat(component).isInstanceOf(ActiveTransferComponent.class);
-        ActiveTransferComponent activeTransferComponent = (ActiveTransferComponent) component;
-        Map<String, Transfer> transfers = activeTransferComponent.getTransfers();
-        assertThat(transfers.size()).isEqualTo(2);
-        Transfer transfer = transfers.get(MTN_EVENT_ACTIVE_TRANSFER);
-        assertTransfer(transfer, MTN_EVENT_ACTIVE_TRANSFER, 1548425797819l, "100.21", TransferStatus.IN_PROGRESS);
-        transfer = transfers.get(ComponentGenerator.MTN_ACTIVE_TRANSFER);
-        assertTransfer(transfer, ComponentGenerator.MTN_ACTIVE_TRANSFER, 1548425797819l, "100.21", TransferStatus.AWAITING_FUNDS);
-
-        componentAction = componentActions.get(1);
-        assertThat(componentAction.command).isInstanceOf(DeleteCommand.class);
-        component = componentAction.component;
-        assertThat(component).isInstanceOf(WelcomeBannerComponent.class);
-        WelcomeBannerComponent welcomeBannerComponent = (WelcomeBannerComponent) component;
-        assertThat(welcomeBannerComponent.getNumberOfFeeFreeTransfers()).isEqualTo(2);
     }
 
     @Test

@@ -5,7 +5,6 @@ import com.azimo.quokka.aggregator.dynamodb.UserStateRepository;
 import com.azimo.quokka.aggregator.generator.ComponentGenerator;
 import com.azimo.quokka.aggregator.model.component.Component;
 import com.azimo.quokka.aggregator.model.component.UserState;
-import com.azimo.quokka.aggregator.model.component.banner.WelcomeBannerComponent;
 import com.azimo.quokka.aggregator.model.component.transfer.RecentTransferComponent;
 import com.azimo.quokka.aggregator.model.event.Event;
 import com.azimo.quokka.aggregator.rule.RuleEngine;
@@ -17,11 +16,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.InputStream;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,8 +29,6 @@ import static org.mockito.Mockito.*;
 @Import(JacksonConfiguration.class)
 public class HomescreenServiceTest {
     private static final String USER_ID = "userId";
-    private static final String USER_FACTS_JSON_ACTIVE = "user_facts_response.json";
-    private static final String USER_FACTS_JSON_NEW_USER = "user_facts_response_new_user.json";
     @Mock
     private UserStateRepository userStateRepo;
     @Mock

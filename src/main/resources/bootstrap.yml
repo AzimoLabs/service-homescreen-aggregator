@@ -11,23 +11,10 @@ spring:
   application:
     name: service-homescreen-aggregator
   cloud:
-    consul:
-      enabled: false
-      host: consul.host
       config:
         prefix: quokka
       discovery:
         register: false
-    vault:
-      enabled: false
-      scheme: http
-      config:
-        order: -10
-      authentication: TOKEN
-      token: azimo123456
-      generic:
-        enabled: true
-
 ---
 spring:
   profiles: dev

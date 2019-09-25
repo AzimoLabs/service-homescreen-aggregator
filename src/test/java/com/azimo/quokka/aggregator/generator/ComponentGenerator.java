@@ -2,7 +2,6 @@ package com.azimo.quokka.aggregator.generator;
 
 import com.azimo.quokka.aggregator.model.component.Component;
 import com.azimo.quokka.aggregator.model.component.UserState;
-import com.azimo.quokka.aggregator.model.component.banner.WelcomeBannerComponent;
 import com.azimo.quokka.aggregator.model.component.support.ActiveChatComponent;
 import com.azimo.quokka.aggregator.model.component.transfer.ActiveTransferComponent;
 import com.azimo.quokka.aggregator.model.component.transfer.RecentTransferComponent;
@@ -92,10 +91,6 @@ public class ComponentGenerator {
         Map<String, Transfer> activeTransfers = Maps.newHashMap();
         activeTransfers.put(mtn, activeTransfer);
         return new ActiveTransferComponent(USER_ID, activeTransfers);
-    }
-
-    public WelcomeBannerComponent welcomeBanner(int numberOfFeeFreeTransfers) {
-        return new WelcomeBannerComponent(USER_ID, numberOfFeeFreeTransfers);
     }
 
     public UserState createUserState(String userId, List<Component> components) {

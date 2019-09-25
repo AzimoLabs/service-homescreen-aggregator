@@ -4,23 +4,6 @@ server:
     context-path: /${spring.application.name}/
 
 spring:
-  kafka:
-    bootstrap-servers: kafka.host:9092
-    transaction-topic: tx-transaction
-    user-topic: user-event
-    document-topic: document-event
-    cs-topic: customer-support-event
-    customer-support-topic: customer-support-event
-    schema-registry: http://schema-registry.host:8081
-    mock-schema-registry: false
-    group-id: service-homescreen-aggregator-2
-    auto-offset-reset: earliest
-    auto-commit: false
-    acks: all
-    #Retry timeout for failed messages on kafka consumer in seconds
-    retry-timeout-in-seconds: 600
-    #Backoff interval for failed messages on kafka consumer in seconds
-    backoff-in-seconds: 30
   amazon:
     aws:
       #accesskey and secretkey are stored in vault
@@ -30,39 +13,18 @@ spring:
       dynamodb:
         #table name is different per env and is set from consul
         table: user-homescreen
-  aggregator:
-    facts-service-url: http://service-user-facts/service-user-facts
-    fee-free-configuration-url: https://service-core-azimo/en/rest/internal/invitationTokenConfig
-    fee-free-token-configuration-auth-token:
-    core-azimo-basic-auth:
 
-springfox:
-  documentation:
-    swagger:
-      v2:
-        path: /api-docs
 ---
 spring:
   profiles: default
-
-service-user-facts:
-  ribbon:
-    listOfServers: localhost:8081
 ---
 spring:
   profiles: dev
 ---
 spring:
   profiles: stage
-  kafka:
-    auto-offset-reset: latest
-    group-id: service-homescreen-aggregator-3
 
 ---
 spring:
   profiles: prod
-  aggregator:
-  kafka:
-    group-id: service-homescreen-aggregator-4
-    auto-offset-reset: latest
 

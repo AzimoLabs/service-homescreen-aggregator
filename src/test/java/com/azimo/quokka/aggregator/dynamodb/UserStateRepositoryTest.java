@@ -6,7 +6,6 @@ import com.azimo.quokka.aggregator.config.aws.DynamoConstants;
 import com.azimo.quokka.aggregator.config.repository.RepositoryTestConfiguration;
 import com.azimo.quokka.aggregator.generator.ComponentGenerator;
 import com.azimo.quokka.aggregator.model.component.Component;
-import com.azimo.quokka.aggregator.model.component.banner.WelcomeBannerComponent;
 import com.azimo.quokka.aggregator.model.component.transfer.ActiveTransferComponent;
 import com.azimo.quokka.aggregator.model.component.transfer.RecentTransferComponent;
 import com.azimo.quokka.aggregator.model.component.transfer.Transfer;
@@ -89,14 +88,11 @@ public class UserStateRepositoryTest {
 
         //then
         assertThat(result.isEmpty()).isFalse();
-        assertThat(result.size()).isEqualTo(3);
+        assertThat(result.size()).isEqualTo(2);
         Component component = result.get(0);
-        assertWelcomeBanner(component, 2);
-
-        component = result.get(1);
         assertActiveTransfer(component);
 
-        component = result.get(2);
+        component = result.get(1);
         assertRecentTransfer(component);
     }
 
@@ -106,11 +102,9 @@ public class UserStateRepositoryTest {
         storeComponents();
 
         //when
-        Optional<WelcomeBannerComponent> welcomeBanner = repository.findComponent(USER_ID, WelcomeBannerComponent.class);
         Optional<ActiveTransferComponent> activeTransfer = repository.findComponent(USER_ID, ActiveTransferComponent.class);
 
         //then
-        assertWelcomeBanner(welcomeBanner.get(), 2);
         assertActiveTransfer(activeTransfer.get());
     }
 
@@ -119,13 +113,13 @@ public class UserStateRepositoryTest {
         //given
         storeComponents();
         int numberOfFeeFreeTransfers = 5;
-        Component component = generator.welcomeBanner(numberOfFeeFreeTransfers);
+        Component component = generator.createActiveTransferComponent(MTN_ACTIVE_TRANSFER);
 
         //when
         repository.save(component);
 
         //then
-        assertWelcomeBanner(component, numberOfFeeFreeTransfers);
+        assertActiveTransfer(component);
     }
 
     @Test
@@ -134,10 +128,10 @@ public class UserStateRepositoryTest {
         storeComponents();
 
         //when
-        repository.deleteComponent(USER_ID, WelcomeBannerComponent.class);
+        repository.deleteComponent(USER_ID, ActiveTransferComponent.class);
 
         //then
-        Optional<WelcomeBannerComponent> component = repository.findComponent(USER_ID, WelcomeBannerComponent.class);
+        Optional<ActiveTransferComponent> component = repository.findComponent(USER_ID, ActiveTransferComponent.class);
         assertThat(component.isPresent()).isFalse();
     }
 
@@ -145,15 +139,15 @@ public class UserStateRepositoryTest {
     public void deleteNonExistingComponent() {
         //given
         //clearing previous state
-        repository.deleteComponent(USER_ID, WelcomeBannerComponent.class);
-        Optional<WelcomeBannerComponent> component = repository.findComponent(USER_ID, WelcomeBannerComponent.class);
+        repository.deleteComponent(USER_ID, ActiveTransferComponent.class);
+        Optional<ActiveTransferComponent> component = repository.findComponent(USER_ID, ActiveTransferComponent.class);
         assertThat(component.isPresent()).isFalse();
 
         //when
-        repository.deleteComponent(USER_ID, WelcomeBannerComponent.class);
+        repository.deleteComponent(USER_ID, ActiveTransferComponent.class);
 
         //then
-        component = repository.findComponent(USER_ID, WelcomeBannerComponent.class);
+        component = repository.findComponent(USER_ID, ActiveTransferComponent.class);
         assertThat(component.isPresent()).isFalse();
     }
 
@@ -199,17 +193,7 @@ public class UserStateRepositoryTest {
         assertThat(transfer.getReceivingAmount()).isEqualTo(receivingAmount);
     }
 
-    private void assertWelcomeBanner(Component component, int nrOfFeeFreeTransfers) {
-        assertThat(component).isInstanceOf(WelcomeBannerComponent.class);
-        WelcomeBannerComponent retrievedBanner = (WelcomeBannerComponent) component;
-        assertThat(retrievedBanner.getUserId()).isEqualTo(USER_ID);
-        assertThat(retrievedBanner.getNumberOfFeeFreeTransfers()).isEqualTo(nrOfFeeFreeTransfers);
-    }
-
     private void storeComponents() {
-        Component banner = generator.welcomeBanner(2);
-        repository.save(banner);
-
         generator.activeAndRecentTrasnfers().stream()
                 .forEach(repository::save);
     }
