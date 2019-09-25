@@ -2,11 +2,12 @@
 Based on the part of our homescreen aggregator project we are showing examples for various implementation mechanisms like DynamoDB polymorphic model, rules engine and CDC tests.
 
 ## DynamoDB polymorphic model
-TODO: Add link to article on medium.  
-In the above mentioned article we are describing how me implemented polymorphic model in DynamoDB with dynamic mapping to POJO's.  
-Additionally you can see how to configure DynamoDB in spring boot and run integration tests with embedded version of that storage.   
-To see how to store objects in Dynamo and map them to POJO's on retrieval look at the class [UserStateRepository](src/main/java/com/azimo/quokka/aggregator/dynamodb/UserStateRepository.java) and the corresponding test.
-There you will find examples of all the store/delete/retrieve methods. In the test you will also see example on how to run embedded DynamoDB.
+TODO: Add link to article on medium after publishing.
+  
+In the article mentioned above, we describe how we implemented a polymorphic model in DynamoDB with dynamic mapping to POJO's.
+Additionally, you can see how to configure DynamoDB in spring boot and run integration tests with an embedded version of that storage.   
+To see how to store objects in Dynamo and map them to POJO's on retrieval, look at the class [UserStateRepository](src/main/java/com/azimo/quokka/aggregator/dynamodb/UserStateRepository.java) and the corresponding test.
+There you will find examples of all the store/delete/retrieve methods. In the test you will also see an example on how to run an embedded DynamoDB.
 Config of DynamoDB is very simple in spring boot. You can find it [here](src/main/java/com/azimo/quokka/aggregator/config/aws/DynamoDBConfig.java)
 
 # License
