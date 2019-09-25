@@ -6,7 +6,6 @@ import com.azimo.quokka.aggregator.rule.Rule;
 import com.azimo.quokka.aggregator.rule.RuleEngine;
 import com.azimo.quokka.aggregator.rule.TransferStatusChangeRule;
 import com.google.common.collect.Lists;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-@EnableConfigurationProperties(AggregatorProperties.class)
 public class AggregatorConfiguration {
 
     @Bean
