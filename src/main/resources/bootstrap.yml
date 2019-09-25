@@ -1,0 +1,43 @@
+management:
+  endpoints:
+    web:
+      base-path: /manage
+      exposure:
+        include: "*"
+    prometheus:
+      enabled: true
+
+spring:
+  application:
+    name: service-homescreen-aggregator
+  cloud:
+      config:
+        prefix: quokka
+      discovery:
+        register: false
+---
+spring:
+  profiles: dev
+  cloud:
+    consul:
+      enabled: true
+    vault:
+      enabled: false
+
+---
+spring:
+  profiles: stage
+  cloud:
+    consul:
+      enabled: true
+    vault:
+      enabled: true
+
+---
+spring:
+  profiles: prod
+  cloud:
+    consul:
+      enabled: true
+    vault:
+      enabled: true

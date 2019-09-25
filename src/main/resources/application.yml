@@ -1,0 +1,30 @@
+server:
+  port: 9030
+  servlet:
+    context-path: /${spring.application.name}/
+
+spring:
+  amazon:
+    aws:
+      #accesskey and secretkey are stored in vault
+      accesskey:
+      secretkey:
+      region: eu-west-1
+      dynamodb:
+        #table name is different per env and is set from consul
+        table: user-homescreen
+
+---
+spring:
+  profiles: default
+---
+spring:
+  profiles: dev
+---
+spring:
+  profiles: stage
+
+---
+spring:
+  profiles: prod
+
