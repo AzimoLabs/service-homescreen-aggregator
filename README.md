@@ -2,7 +2,7 @@
 Based on the part of our homescreen aggregator project we are showing examples for various implementation mechanisms like DynamoDB polymorphic model, rules engine and CDC tests.
 
 ## DynamoDB polymorphic model
-TODO: Add link to article on medium after publishing.
+You can find the link to the article on this topic [here](https://medium.com/azimolabs/project-dashboard-polymorphic-model-in-dynamodb-22ec6659e989)
   
 In the article mentioned above, we describe how we implemented a polymorphic model in DynamoDB with dynamic mapping to POJO's.
 Additionally, you can see how to configure DynamoDB in spring boot and run integration tests with an embedded version of that storage.   
